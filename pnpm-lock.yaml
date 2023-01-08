@@ -7,9 +7,7 @@ specifiers:
   '@types/node': ^18.11.18
   '@vitejs/plugin-vue': ^4.0.0
   eventemitter3: ^4.0.7
-  lodash.clonedeep: ^4.5.0
-  lodash.isequal: ^4.5.0
-  lodash.merge: ^4.6.2
+  lodash: ^4.17.21
   parchment: ^2.0.1
   quill-delta: ^5.0.0
   stylus: ^0.59.0
@@ -20,9 +18,7 @@ specifiers:
 
 dependencies:
   eventemitter3: registry.npmmirror.com/eventemitter3/4.0.7
-  lodash.clonedeep: registry.npmmirror.com/lodash.clonedeep/4.5.0
-  lodash.isequal: registry.npmmirror.com/lodash.isequal/4.5.0
-  lodash.merge: registry.npmmirror.com/lodash.merge/4.6.2
+  lodash: registry.npmmirror.com/lodash/4.17.21
   parchment: registry.npmmirror.com/parchment/2.0.1
   quill-delta: registry.npmmirror.com/quill-delta/5.0.0
   vue: registry.npmmirror.com/vue/3.2.45
@@ -2351,10 +2347,10 @@ packages:
     version: 4.5.0
     dev: false
 
-  registry.npmmirror.com/lodash.merge/4.6.2:
-    resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/lodash.merge/-/lodash.merge-4.6.2.tgz}
-    name: lodash.merge
-    version: 4.6.2
+  registry.npmmirror.com/lodash/4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/lodash/-/lodash-4.17.21.tgz}
+    name: lodash
+    version: 4.17.21
     dev: false
 
   registry.npmmirror.com/lru-cache/5.1.1:

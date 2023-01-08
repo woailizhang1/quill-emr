@@ -1,4 +1,4 @@
-import merge from 'lodash.merge';
+import { merge } from 'lodash';
 import Emitter from '../core/emitter';
 import BaseTheme, { BaseTooltip } from './base';
 import { Range } from '../core/selection';
@@ -42,7 +42,7 @@ class BubbleTooltip extends BaseTooltip {
             const index = this.quill.getIndex(lastLine);
             const length = Math.min(
               lastLine.length() - 1,
-              range.index + range.length - index,
+              range.index + range.length - index
             );
             const indexBounds = this.quill.getBounds(new Range(index, length));
             this.position(indexBounds);
@@ -53,7 +53,7 @@ class BubbleTooltip extends BaseTooltip {
         ) {
           this.hide();
         }
-      },
+      }
     );
   }
 

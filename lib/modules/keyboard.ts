@@ -1,5 +1,5 @@
-import cloneDeep from 'lodash.clonedeep';
-import isEqual from 'lodash.isequal';
+import { cloneDeep, isEqual } from 'lodash';
+
 import Delta, { AttributeMap } from 'quill-delta';
 import { BlockBlot, EmbedBlot, Scope, TextBlot } from 'parchment';
 import Quill from '../core/quill';
@@ -39,7 +39,7 @@ interface BindingObject
     range: Range,
     curContext: Context,
     // eslint-disable-next-line no-use-before-define
-    binding: NormalizedBinding,
+    binding: NormalizedBinding
   ) => boolean | void;
 }
 
@@ -60,7 +60,7 @@ interface KeyboardOptions {
 class Keyboard extends Module<KeyboardOptions> {
   static match(evt: KeyboardEvent, binding) {
     if (
-      ['altKey', 'ctrlKey', 'metaKey', 'shiftKey'].some(key => {
+      ['altKey', 'ctrlKey', 'metaKey', 'shiftKey'].some((key) => {
         return !!binding[key] !== evt[key] && binding[key] !== null;
       })
     ) {
@@ -74,7 +74,7 @@ class Keyboard extends Module<KeyboardOptions> {
   constructor(quill: Quill, options: Partial<KeyboardOptions>) {
     super(quill, options);
     this.bindings = {};
-    Object.keys(this.options.bindings).forEach(name => {
+    Object.keys(this.options.bindings).forEach((name) => {
       if (this.options.bindings[name]) {
         this.addBinding(this.options.bindings[name]);
       }
@@ -82,41 +82,41 @@ class Keyboard extends Module<KeyboardOptions> {
     this.addBinding({ key: 'Enter', shiftKey: null }, this.handleEnter);
     this.addBinding(
       { key: 'Enter', metaKey: null, ctrlKey: null, altKey: null },
-      () => {},
+      () => {}
     );
     if (/Firefox/i.test(navigator.userAgent)) {
       // Need to handle delete and backspace for Firefox in the general case #1171
       this.addBinding(
         { key: 'Backspace' },
         { collapsed: true },
-        this.handleBackspace,
+        this.handleBackspace
       );
       this.addBinding(
         { key: 'Delete' },
         { collapsed: true },
-        this.handleDelete,
+        this.handleDelete
       );
     } else {
       this.addBinding(
         { key: 'Backspace' },
         { collapsed: true, prefix: /^.?$/ },
-        this.handleBackspace,
+        this.handleBackspace
       );
       this.addBinding(
         { key: 'Delete' },
         { collapsed: true, suffix: /^.?$/ },
-        this.handleDelete,
+        this.handleDelete
       );
     }
     this.addBinding(
       { key: 'Backspace' },
       { collapsed: false },
-      this.handleDeleteRange,
+      this.handleDeleteRange
     );
     this.addBinding(
       { key: 'Delete' },
       { collapsed: false },
-      this.handleDeleteRange,
+      this.handleDeleteRange
     );
     this.addBinding(
       {
@@ -127,7 +127,7 @@ class Keyboard extends Module<KeyboardOptions> {
         shiftKey: null,
       },
       { collapsed: true, offset: 0 },
-      this.handleBackspace,
+      this.handleBackspace
     );
     this.listen();
   }
@@ -139,7 +139,7 @@ class Keyboard extends Module<KeyboardOptions> {
       | Partial<Omit<BindingObject, 'key' | 'handler'>> = {},
     handler:
       | Required<BindingObject['handler']>
-      | Partial<Omit<BindingObject, 'key' | 'handler'>> = {},
+      | Partial<Omit<BindingObject, 'key' | 'handler'>> = {}
   ) {
     const binding = normalize(keyBinding);
     if (binding == null) {
@@ -153,7 +153,7 @@ class Keyboard extends Module<KeyboardOptions> {
       handler = { handler };
     }
     const keys = Array.isArray(binding.key) ? binding.key : [binding.key];
-    keys.forEach(key => {
+    keys.forEach((key) => {
       const singleBinding = {
         ...binding,
         key,
@@ -166,12 +166,14 @@ class Keyboard extends Module<KeyboardOptions> {
   }
 
   listen() {
-    this.quill.root.addEventListener('keydown', evt => {
+    this.quill.root.addEventListener('keydown', (evt) => {
       if (evt.defaultPrevented || evt.isComposing) return;
       const bindings = (this.bindings[evt.key] || []).concat(
-        this.bindings[evt.which] || [],
+        this.bindings[evt.which] || []
       );
-      const matches = bindings.filter(binding => Keyboard.match(evt, binding));
+      const matches = bindings.filter((binding) =>
+        Keyboard.match(evt, binding)
+      );
       if (matches.length === 0) return;
       // @ts-expect-error
       const blot = Quill.find(evt.target, true);
@@ -200,7 +202,7 @@ class Keyboard extends Module<KeyboardOptions> {
         suffix: suffixText,
         event: evt,
       };
-      const prevented = matches.some(binding => {
+      const prevented = matches.some((binding) => {
         if (
           binding.collapsed != null &&
           binding.collapsed !== curContext.collapsed
@@ -215,13 +217,13 @@ class Keyboard extends Module<KeyboardOptions> {
         }
         if (Array.isArray(binding.format)) {
           // any format is present
-          if (binding.format.every(name => curContext.format[name] == null)) {
+          if (binding.format.every((name) => curContext.format[name] == null)) {
             return false;
           }
         } else if (typeof binding.format === 'object') {
           // all formats must match
           if (
-            !Object.keys(binding.format).every(name => {
+            !Object.keys(binding.format).every((name) => {
               if (binding.format[name] === true)
                 return curContext.format[name] != null;
               if (binding.format[name] === false)
@@ -319,7 +321,7 @@ class Keyboard extends Module<KeyboardOptions> {
         }
         return formats;
       },
-      {},
+      {}
     );
     const delta = new Delta()
       .retain(range.index)
@@ -423,7 +425,7 @@ const defaultOptions: KeyboardOptions = {
           range.index,
           range.length,
           formats,
-          Quill.sources.USER,
+          Quill.sources.USER
         );
       },
     },
@@ -496,7 +498,7 @@ const defaultOptions: KeyboardOptions = {
             this.quill.setSelection(
               range.index + 1,
               range.length,
-              Quill.sources.SILENT,
+              Quill.sources.SILENT
             );
           } else if (shift > 0) {
             index += table.length();
@@ -653,7 +655,7 @@ function makeCodeBlockHandler(indent: boolean): BindingObject {
 
 function makeEmbedArrowHandler(
   key: string,
-  shiftKey: boolean | null,
+  shiftKey: boolean | null
 ): BindingObject {
   const where = key === 'ArrowLeft' ? 'prefix' : 'suffix';
   return {
@@ -673,7 +675,7 @@ function makeEmbedArrowHandler(
           this.quill.setSelection(
             range.index - 1,
             range.length + 1,
-            Quill.sources.USER,
+            Quill.sources.USER
           );
         } else {
           this.quill.setSelection(range.index - 1, Quill.sources.USER);
@@ -682,12 +684,12 @@ function makeEmbedArrowHandler(
         this.quill.setSelection(
           range.index,
           range.length + 1,
-          Quill.sources.USER,
+          Quill.sources.USER
         );
       } else {
         this.quill.setSelection(
           range.index + range.length + 1,
-          Quill.sources.USER,
+          Quill.sources.USER
         );
       }
       return false;
@@ -738,13 +740,13 @@ function makeTableArrowHandler(up: boolean): BindingObject {
             this.quill.setSelection(
               targetLine.offset(this.quill.scroll) + targetLine.length() - 1,
               0,
-              Quill.sources.USER,
+              Quill.sources.USER
             );
           } else {
             this.quill.setSelection(
               targetLine.offset(this.quill.scroll),
               0,
-              Quill.sources.USER,
+              Quill.sources.USER
             );
           }
         }

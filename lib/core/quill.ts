@@ -1,5 +1,5 @@
-import cloneDeep from 'lodash.clonedeep';
-import merge from 'lodash.merge';
+import { cloneDeep, merge } from 'lodash';
+
 import * as Parchment from 'parchment';
 import {
   Blot,
@@ -96,7 +96,7 @@ class Quill {
       | Parchment.Attributor
       | Record<string, unknown>,
     target?: BlotConstructor | Parchment.Attributor | boolean,
-    overwrite = false,
+    overwrite = false
   ) {
     if (typeof path !== 'string') {
       const name = 'attrName' in path ? path.attrName : path.blotName;
@@ -105,7 +105,7 @@ class Quill {
         // @ts-expect-error
         this.register(`formats/${name}`, path, target);
       } else {
-        Object.keys(path).forEach(key => {
+        Object.keys(path).forEach((key) => {
           // @ts-expect-error
           this.register(key, path[key], target);
         });
@@ -167,7 +167,7 @@ class Quill {
     this.emitter = new Emitter();
     // @ts-expect-error TODO: fix BlotConstructor
     const ScrollBlot = this.options.registry.query(
-      Parchment.ScrollBlot.blotName,
+      Parchment.ScrollBlot.blotName
     ) as ScrollConstructor;
     this.scroll = new ScrollBlot(this.options.registry, this.root, {
       emitter: this.emitter,
@@ -180,7 +180,7 @@ class Quill {
     this.history = this.theme.addModule('history');
     this.uploader = this.theme.addModule('uploader');
     this.theme.init();
-    this.emitter.on(Emitter.events.EDITOR_CHANGE, type => {
+    this.emitter.on(Emitter.events.EDITOR_CHANGE, (type) => {
       if (type === Emitter.events.TEXT_CHANGE) {
         this.root.classList.toggle('ql-blank', this.editor.isBlank());
       }
@@ -193,7 +193,7 @@ class Quill {
       modify.call(
         this,
         () => this.editor.update(null, mutations, selectionInfo),
-        source,
+        source
       );
     });
     this.emitter.on(Emitter.events.SCROLL_EMBED_UPDATE, (blot, delta) => {
@@ -209,7 +209,7 @@ class Quill {
             .retain({ [blot.statics.blotName]: delta });
           return this.editor.update(change, [], selectionInfo);
         },
-        Quill.sources.USER,
+        Quill.sources.USER
       );
     });
     if (html) {
@@ -233,7 +233,7 @@ class Quill {
   addContainer(container: HTMLElement, refNode?: Node): HTMLElement;
   addContainer(
     container: string | HTMLElement,
-    refNode = null,
+    refNode = null
   ): HTMLDivElement | HTMLElement {
     if (typeof container === 'string') {
       const className = container;
@@ -253,7 +253,7 @@ class Quill {
   deleteText(
     index: number | Range,
     length?: number | EmitterSource,
-    source?: EmitterSource,
+    source?: EmitterSource
   ): Delta {
     // @ts-expect-error
     [index, length, , source] = overload(index, length, source);
@@ -265,7 +265,7 @@ class Quill {
       },
       source,
       index,
-      -1 * length,
+      -1 * length
     );
   }
 
@@ -295,7 +295,7 @@ class Quill {
   format(
     name: string,
     value: unknown,
-    source: EmitterSource = Emitter.sources.API,
+    source: EmitterSource = Emitter.sources.API
   ) {
     return modify.call(
       this,
@@ -318,7 +318,7 @@ class Quill {
         this.setSelection(range, Emitter.sources.SILENT);
         return change;
       },
-      source,
+      source
     );
   }
 
@@ -326,21 +326,21 @@ class Quill {
     index: number,
     length: number,
     formats: Record<string, unknown>,
-    source?: EmitterSource,
+    source?: EmitterSource
   );
   formatLine(
     index: number,
     length: number,
     name: string,
     value?: unknown,
-    source?: EmitterSource,
+    source?: EmitterSource
   );
   formatLine(
     index: number,
     length: number,
     name: string | Record<string, unknown>,
     value?: unknown | EmitterSource,
-    source?: EmitterSource,
+    source?: EmitterSource
   ) {
     let formats;
     // eslint-disable-next-line prefer-const
@@ -350,7 +350,7 @@ class Quill {
       // @ts-expect-error
       name,
       value,
-      source,
+      source
     );
     return modify.call(
       this,
@@ -359,7 +359,7 @@ class Quill {
       },
       source,
       index,
-      0,
+      0
     );
   }
 
@@ -367,21 +367,21 @@ class Quill {
     range: { index: number; length: number },
     name: string,
     value: unknown,
-    source?: EmitterSource,
+    source?: EmitterSource
   ): Delta;
   formatText(
     index: number,
     length: number,
     name: string,
     value: unknown,
-    source: EmitterSource,
+    source: EmitterSource
   ): Delta;
   formatText(
     index: number | { index: number; length: number },
     length: number | string,
     name: string | unknown,
     value?: unknown | EmitterSource,
-    source?: EmitterSource,
+    source?: EmitterSource
   ): Delta {
     let formats;
     // eslint-disable-next-line prefer-const
@@ -391,7 +391,7 @@ class Quill {
       length,
       name,
       value,
-      source,
+      source
     );
     return modify.call(
       this,
@@ -401,7 +401,7 @@ class Quill {
       },
       source,
       index,
-      0,
+      0
     );
   }
 
@@ -433,7 +433,7 @@ class Quill {
   getFormat(range: { index: number; length: number });
   getFormat(
     index: { index: number; length: number } | number = this.getSelection(true),
-    length = 0,
+    length = 0
   ) {
     if (typeof index === 'number') {
       return this.editor.getFormat(index, length);
@@ -461,7 +461,7 @@ class Quill {
   getLines(index?: number, length?: number): (Block | BlockEmbed)[];
   getLines(
     index: { index: number; length: number } | number = 0,
-    length = Number.MAX_VALUE,
+    length = Number.MAX_VALUE
   ): (Block | BlockEmbed)[] {
     if (typeof index !== 'number') {
       return this.scroll.lines(index.index, index.length);
@@ -485,7 +485,7 @@ class Quill {
   getSemanticHTML(index?: number, length?: number): string;
   getSemanticHTML(
     index: { index: number; length: number } | number = 0,
-    length?: number,
+    length?: number
   ) {
     if (typeof index === 'number') {
       length = this.getLength() - index;
@@ -499,7 +499,7 @@ class Quill {
   getText(index: number, length?: number): string;
   getText(
     index: { index: number; length: number } | number = 0,
-    length?: number,
+    length?: number
   ): string {
     if (typeof index === 'number') {
       length = this.getLength() - index;
@@ -517,7 +517,7 @@ class Quill {
     index: number,
     embed: string,
     value: unknown,
-    source: EmitterSource = Quill.sources.API,
+    source: EmitterSource = Quill.sources.API
   ) {
     return modify.call(
       this,
@@ -525,7 +525,7 @@ class Quill {
         return this.editor.insertEmbed(index, embed, value);
       },
       source,
-      index,
+      index
     );
   }
 
@@ -535,14 +535,14 @@ class Quill {
     text: string,
     name: string,
     value: unknown,
-    source: EmitterSource,
+    source: EmitterSource
   ): Delta;
   insertText(
     index: number,
     text: string,
     name: string | EmitterSource,
     value?: unknown,
-    source?: EmitterSource,
+    source?: EmitterSource
   ): Delta {
     let formats;
     // eslint-disable-next-line prefer-const
@@ -554,7 +554,7 @@ class Quill {
       },
       source,
       index,
-      text.length,
+      text.length
     );
   }
 
@@ -568,11 +568,11 @@ class Quill {
 
   on(
     event: typeof Emitter['events']['TEXT_CHANGE'],
-    handler: (delta: Delta, oldContent: Delta, source: EmitterSource) => void,
+    handler: (delta: Delta, oldContent: Delta, source: EmitterSource) => void
   ): Emitter;
   on(
     event: typeof Emitter['events']['SELECTION_CHANGE'],
-    handler: (range: Range, oldRange: Range, source: EmitterSource) => void,
+    handler: (range: Range, oldRange: Range, source: EmitterSource) => void
   ): Emitter;
   // @ts-expect-error
   on(
@@ -584,9 +584,9 @@ class Quill {
             typeof Emitter['events']['SELECTION_CHANGE'],
             Range,
             Range,
-            EmitterSource,
+            EmitterSource
           ]
-    ) => void,
+    ) => void
   ): Emitter;
   on(event: string, ...args: unknown[]): Emitter;
   on(...args: Parameters<typeof Emitter['prototype']['on']>): Emitter {
@@ -605,7 +605,7 @@ class Quill {
         return this.editor.removeFormat(index, length);
       },
       source,
-      index,
+      index
     );
   }
 
@@ -615,7 +615,7 @@ class Quill {
 
   setContents(
     delta: Delta | Op[],
-    source: EmitterSource = Emitter.sources.API,
+    source: EmitterSource = Emitter.sources.API
   ) {
     return modify.call(
       this,
@@ -630,7 +630,7 @@ class Quill {
         const delete2 = this.editor.deleteText(this.getLength() - 1, 1);
         return delete1.compose(applied).compose(delete2);
       },
-      source,
+      source
     );
   }
   setSelection(range: Range | null, source?: EmitterSource): void;
@@ -640,7 +640,7 @@ class Quill {
   setSelection(
     index: Range | null | number,
     length?: EmitterSource | number,
-    source?: EmitterSource,
+    source?: EmitterSource
   ): void {
     if (index == null) {
       // @ts-expect-error https://github.com/microsoft/TypeScript/issues/22609
@@ -669,7 +669,7 @@ class Quill {
 
   updateContents(
     delta: Delta | Op[],
-    source: EmitterSource = Emitter.sources.API,
+    source: EmitterSource = Emitter.sources.API
   ) {
     return modify.call(
       this,
@@ -678,14 +678,14 @@ class Quill {
         return this.editor.applyDelta(delta);
       },
       source,
-      true,
+      true
     );
   }
 }
 
 function expandConfig(
   container: HTMLElement,
-  userConfig: Options,
+  userConfig: Options
 ): ExpandedOptions {
   let expandedConfig = merge(
     {
@@ -697,7 +697,7 @@ function expandConfig(
         uploader: true,
       },
     },
-    userConfig,
+    userConfig
   );
   if (!expandedConfig.theme || expandedConfig.theme === Quill.DEFAULTS.theme) {
     expandedConfig.theme = Theme;
@@ -705,27 +705,27 @@ function expandConfig(
     expandedConfig.theme = Quill.import(`themes/${expandedConfig.theme}`);
     if (expandedConfig.theme == null) {
       throw new Error(
-        `Invalid theme ${expandedConfig.theme}. Did you register it?`,
+        `Invalid theme ${expandedConfig.theme}. Did you register it?`
       );
     }
   }
   const themeConfig = cloneDeep(expandedConfig.theme.DEFAULTS);
-  [themeConfig, expandedConfig].forEach(config => {
+  [themeConfig, expandedConfig].forEach((config) => {
     config.modules = config.modules || {};
-    Object.keys(config.modules).forEach(module => {
+    Object.keys(config.modules).forEach((module) => {
       if (config.modules[module] === true) {
         config.modules[module] = {};
       }
     });
   });
   const moduleNames = Object.keys(themeConfig.modules).concat(
-    Object.keys(expandedConfig.modules),
+    Object.keys(expandedConfig.modules)
   );
   const moduleConfig = moduleNames.reduce((config, name) => {
     const moduleClass = Quill.import(`modules/${name}`);
     if (moduleClass == null) {
       debug.error(
-        `Cannot load ${name} module. Are you sure you registered it?`,
+        `Cannot load ${name} module. Are you sure you registered it?`
       );
     } else {
       // @ts-expect-error
@@ -748,9 +748,9 @@ function expandConfig(
     Quill.DEFAULTS,
     { modules: moduleConfig },
     themeConfig,
-    expandedConfig,
+    expandedConfig
   );
-  ['bounds', 'container', 'scrollingContainer'].forEach(key => {
+  ['bounds', 'container', 'scrollingContainer'].forEach((key) => {
     if (typeof expandedConfig[key] === 'string') {
       expandedConfig[key] = document.querySelector(expandedConfig[key]);
     }
@@ -762,7 +762,7 @@ function expandConfig(
       }
       return config;
     },
-    {},
+    {}
   );
   return expandedConfig;
 }
@@ -805,45 +805,45 @@ type NormalizedIndexLength = [
   number,
   number,
   Record<string, unknown>,
-  EmitterSource,
+  EmitterSource
 ];
 function overload(index: number, source?: EmitterSource): NormalizedIndexLength;
 function overload(
   index: number,
   length: number,
-  source?: EmitterSource,
+  source?: EmitterSource
 ): NormalizedIndexLength;
 function overload(
   index: number,
   length: number,
   format: string,
   value: unknown,
-  source?: EmitterSource,
+  source?: EmitterSource
 ): NormalizedIndexLength;
 function overload(
   index: number,
   length: number,
   format: Record<string, unknown>,
-  source?: EmitterSource,
+  source?: EmitterSource
 ): NormalizedIndexLength;
 function overload(range: Range, source?: EmitterSource): NormalizedIndexLength;
 function overload(
   range: Range,
   format: string,
   value: unknown,
-  source?: EmitterSource,
+  source?: EmitterSource
 ): NormalizedIndexLength;
 function overload(
   range: Range,
   format: Record<string, unknown>,
-  source?: EmitterSource,
+  source?: EmitterSource
 ): NormalizedIndexLength;
 function overload(
   index: Range | number,
   length?: number | string | Record<string, unknown> | EmitterSource,
   name?: string | unknown | Record<string, unknown> | EmitterSource,
   value?: unknown | EmitterSource,
-  source?: EmitterSource,
+  source?: EmitterSource
 ): NormalizedIndexLength {
   let formats = {};
   // @ts-expect-error
@@ -895,11 +895,11 @@ function shiftRange(range, index, length, source?: EmitterSource) {
   let start;
   let end;
   if (index && typeof index.transformPosition === 'function') {
-    [start, end] = [range.index, range.index + range.length].map(pos =>
-      index.transformPosition(pos, source !== Emitter.sources.USER),
+    [start, end] = [range.index, range.index + range.length].map((pos) =>
+      index.transformPosition(pos, source !== Emitter.sources.USER)
     );
   } else {
-    [start, end] = [range.index, range.index + range.length].map(pos => {
+    [start, end] = [range.index, range.index + range.length].map((pos) => {
       if (pos < index || (pos === index && source === Emitter.sources.USER))
         return pos;
       if (length >= 0) {

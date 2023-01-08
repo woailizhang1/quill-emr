@@ -1,4 +1,4 @@
-import merge from 'lodash.merge';
+import { merge } from 'lodash';
 import Emitter from '../core/emitter';
 import BaseTheme, { BaseTooltip } from './base';
 import LinkBlot from '../formats/link';
@@ -24,24 +24,28 @@ class SnowTooltip extends BaseTooltip {
 
   listen() {
     super.listen();
-    this.root.querySelector('a.ql-action').addEventListener('click', event => {
-      if (this.root.classList.contains('ql-editing')) {
-        this.save();
-      } else {
-        this.edit('link', this.preview.textContent);
-      }
-      event.preventDefault();
-    });
-    this.root.querySelector('a.ql-remove').addEventListener('click', event => {
-      if (this.linkRange != null) {
-        const range = this.linkRange;
-        this.restoreFocus();
-        this.quill.formatText(range, 'link', false, Emitter.sources.USER);
-        delete this.linkRange;
-      }
-      event.preventDefault();
-      this.hide();
-    });
+    this.root
+      .querySelector('a.ql-action')
+      .addEventListener('click', (event) => {
+        if (this.root.classList.contains('ql-editing')) {
+          this.save();
+        } else {
+          this.edit('link', this.preview.textContent);
+        }
+        event.preventDefault();
+      });
+    this.root
+      .querySelector('a.ql-remove')
+      .addEventListener('click', (event) => {
+        if (this.linkRange != null) {
+          const range = this.linkRange;
+          this.restoreFocus();
+          this.quill.formatText(range, 'link', false, Emitter.sources.USER);
+          delete this.linkRange;
+        }
+        event.preventDefault();
+        this.hide();
+      });
     this.quill.on(
       Emitter.events.SELECTION_CHANGE,
       (range, oldRange, source) => {
@@ -50,7 +54,7 @@ class SnowTooltip extends BaseTooltip {
           const [link, offset] = this.quill.scroll.descendant(
             // @ts-expect-error
             LinkBlot,
-            range.index,
+            range.index
           );
           if (link != null) {
             this.linkRange = new Range(range.index - offset, link.length());
@@ -65,7 +69,7 @@ class SnowTooltip extends BaseTooltip {
           delete this.linkRange;
         }
         this.hide();
-      },
+      }
     );
   }
 
@@ -98,7 +102,7 @@ class SnowTheme extends BaseTheme {
         { key: 'k', shortKey: true },
         (range, context) => {
           toolbar.handlers.link.call(toolbar, !context.format.link);
-        },
+        }
       );
     }
   }

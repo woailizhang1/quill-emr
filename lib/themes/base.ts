@@ -1,4 +1,4 @@
-import merge from 'lodash.merge';
+import { merge } from 'lodash';
 import Quill from '../core/quill';
 import Emitter from '../core/emitter';
 import Theme from '../core/theme';
@@ -76,7 +76,7 @@ class BaseTheme extends Theme {
         this.tooltip.hide();
       }
       if (this.pickers != null) {
-        this.pickers.forEach(picker => {
+        this.pickers.forEach((picker) => {
           // @ts-expect-error
           if (!picker.container.contains(e.target)) {
             picker.close();
@@ -98,9 +98,9 @@ class BaseTheme extends Theme {
   }
 
   buildButtons(buttons: HTMLElement[], icons) {
-    Array.from(buttons).forEach(button => {
+    Array.from(buttons).forEach((button) => {
       const className = button.getAttribute('class') || '';
-      className.split(/\s+/).forEach(name => {
+      className.split(/\s+/).forEach((name) => {
         if (!name.startsWith('ql-')) return;
         name = name.slice('ql-'.length);
         if (icons[name] == null) return;
@@ -120,7 +120,7 @@ class BaseTheme extends Theme {
   }
 
   buildPickers(selects: HTMLElement[], icons) {
-    this.pickers = Array.from(selects).map(select => {
+    this.pickers = Array.from(selects).map((select) => {
       if (select.classList.contains('ql-align')) {
         if (select.querySelector('option') == null) {
           fillSelect(select, ALIGNS);
@@ -139,7 +139,7 @@ class BaseTheme extends Theme {
           fillSelect(
             select,
             COLORS,
-            format === 'background' ? '#ffffff' : '#000000',
+            format === 'background' ? '#ffffff' : '#000000'
           );
         }
         return new ColorPicker(select, icons[format]);
@@ -157,7 +157,7 @@ class BaseTheme extends Theme {
       return new Picker(select);
     });
     const update = () => {
-      this.pickers.forEach(picker => {
+      this.pickers.forEach((picker) => {
         picker.update();
       });
     };
@@ -173,14 +173,14 @@ BaseTheme.DEFAULTS = merge({}, Theme.DEFAULTS, {
         },
         image() {
           let fileInput = this.container.querySelector(
-            'input.ql-image[type=file]',
+            'input.ql-image[type=file]'
           );
           if (fileInput == null) {
             fileInput = document.createElement('input');
             fileInput.setAttribute('type', 'file');
             fileInput.setAttribute(
               'accept',
-              this.quill.uploader.options.mimetypes.join(', '),
+              this.quill.uploader.options.mimetypes.join(', ')
             );
             fileInput.classList.add('ql-image');
             fileInput.addEventListener('change', () => {
@@ -211,7 +211,7 @@ class BaseTooltip extends Tooltip {
   }
 
   listen() {
-    this.textbox.addEventListener('keydown', event => {
+    this.textbox.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
         this.save();
         event.preventDefault();
@@ -238,7 +238,7 @@ class BaseTooltip extends Tooltip {
     this.textbox.select();
     this.textbox.setAttribute(
       'placeholder',
-      this.textbox.getAttribute(`data-${mode}`) || '',
+      this.textbox.getAttribute(`data-${mode}`) || ''
     );
     this.root.setAttribute('data-mode', mode);
   }
@@ -259,7 +259,7 @@ class BaseTooltip extends Tooltip {
             this.linkRange,
             'link',
             value,
-            Emitter.sources.USER,
+            Emitter.sources.USER
           );
           delete this.linkRange;
         } else {
@@ -281,7 +281,7 @@ class BaseTooltip extends Tooltip {
             index,
             this.root.getAttribute('data-mode'),
             value,
-            Emitter.sources.USER,
+            Emitter.sources.USER
           );
           if (this.root.getAttribute('data-mode') === 'formula') {
             this.quill.insertText(index + 1, ' ', Emitter.sources.USER);
@@ -300,7 +300,7 @@ class BaseTooltip extends Tooltip {
 function extractVideoUrl(url) {
   let match =
     url.match(
-      /^(?:(https?):\/\/)?(?:(?:www|m)\.)?youtube\.com\/watch.*v=([a-zA-Z0-9_-]+)/,
+      /^(?:(https?):\/\/)?(?:(?:www|m)\.)?youtube\.com\/watch.*v=([a-zA-Z0-9_-]+)/
     ) ||
     url.match(/^(?:(https?):\/\/)?(?:(?:www|m)\.)?youtu\.be\/([a-zA-Z0-9_-]+)/);
   if (match) {
@@ -316,7 +316,7 @@ function extractVideoUrl(url) {
 }
 
 function fillSelect(select, values, defaultValue: unknown = false) {
-  values.forEach(value => {
+  values.forEach((value) => {
     const option = document.createElement('option');
     if (value === defaultValue) {
       option.setAttribute('selected', 'selected');

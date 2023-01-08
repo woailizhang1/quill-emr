@@ -1,6 +1,5 @@
-import cloneDeep from 'lodash.clonedeep';
-import isEqual from 'lodash.isequal';
-import merge from 'lodash.merge';
+import { cloneDeep, isEqual, merge } from 'lodash';
+
 import { LeafBlot, Scope } from 'parchment';
 import Delta, { AttributeMap, Op } from 'quill-delta';
 import Block, { BlockEmbed, bubbleFormats } from '../blots/block';
@@ -71,7 +70,7 @@ class Editor {
           this.scroll.updateEmbedAt(index, key, op.retain[key]);
         }
       }
-      Object.keys(attributes).forEach(name => {
+      Object.keys(attributes).forEach((name) => {
         this.scroll.formatAt(index, length, name, attributes[name]);
       });
       const addedLength = addedNewline ? 1 : 0;
@@ -99,11 +98,11 @@ class Editor {
   formatLine(
     index: number,
     length: number,
-    formats: Record<string, unknown> = {},
+    formats: Record<string, unknown> = {}
   ): Delta {
     this.scroll.update();
-    Object.keys(formats).forEach(format => {
-      this.scroll.lines(index, Math.max(length, 1)).forEach(line => {
+    Object.keys(formats).forEach((format) => {
+      this.scroll.lines(index, Math.max(length, 1)).forEach((line) => {
         line.format(format, formats[format]);
       });
     });
@@ -115,9 +114,9 @@ class Editor {
   formatText(
     index: number,
     length: number,
-    formats: Record<string, unknown> = {},
+    formats: Record<string, unknown> = {}
   ): Delta {
-    Object.keys(formats).forEach(format => {
+    Object.keys(formats).forEach((format) => {
       this.scroll.formatAt(index, length, format, formats[format]);
     });
     const delta = new Delta().retain(index).retain(length, cloneDeep(formats));
@@ -138,7 +137,7 @@ class Editor {
     let lines = [];
     let leaves = [];
     if (length === 0) {
-      this.scroll.path(index).forEach(path => {
+      this.scroll.path(index).forEach((path) => {
         const [blot] = path;
         if (blot instanceof Block) {
           lines.push(blot);
@@ -151,7 +150,7 @@ class Editor {
       // @ts-expect-error
       leaves = this.scroll.descendants(LeafBlot, index, length);
     }
-    [lines, leaves] = [lines, leaves].map(blots => {
+    [lines, leaves] = [lines, leaves].map((blots) => {
       if (blots.length === 0) return {};
       let formats = bubbleFormats(blots.shift());
       while (Object.keys(formats).length > 0) {
@@ -174,8 +173,8 @@ class Editor {
 
   getText(index: number, length: number): string {
     return this.getContents(index, length)
-      .filter(op => typeof op.insert === 'string')
-      .map(op => op.insert)
+      .filter((op) => typeof op.insert === 'string')
+      .map((op) => op.insert)
       .join('');
   }
 
@@ -187,15 +186,15 @@ class Editor {
   insertText(
     index: number,
     text: string,
-    formats: Record<string, unknown> = {},
+    formats: Record<string, unknown> = {}
   ): Delta {
     text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
     this.scroll.insertAt(index, text);
-    Object.keys(formats).forEach(format => {
+    Object.keys(formats).forEach((format) => {
       this.scroll.formatAt(index, text.length, format, formats[format]);
     });
     return this.update(
-      new Delta().retain(index).insert(text, cloneDeep(formats)),
+      new Delta().retain(index).insert(text, cloneDeep(formats))
     );
   }
 
@@ -283,7 +282,7 @@ function convertListHTML(items, lastIndent, types) {
       return `<${tag}><li${attribute}>${convertHTML(
         child,
         offset,
-        length,
+        length
       )}${convertListHTML(rest, indent, types)}`;
     }
     return `<${tag}><li>${convertListHTML(items, lastIndent + 1, types)}`;
@@ -293,7 +292,7 @@ function convertListHTML(items, lastIndent, types) {
     return `</li><li${attribute}>${convertHTML(
       child,
       offset,
-      length,
+      length
     )}${convertListHTML(rest, indent, types)}`;
   }
   const [endTag] = getListType(types.pop());
@@ -384,7 +383,7 @@ function normalizeDelta(delta: Delta) {
 
 function shiftRange(
   { index, length }: { index: number; length: number },
-  amount: number,
+  amount: number
 ) {
   return new Range(index + amount, length);
 }
